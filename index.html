@@ -279,7 +279,7 @@ body {
       <!-- Down Payment -->
       <div class="ctrl-group">
         <label>Down Payment %</label>
-        <input class="ctrl-input" type="number" id="downInput" value="50" min="20" max="80" step="5"
+        <input class="ctrl-input" type="number" id="downInput" value="45" min="20" max="80" step="5"
                oninput="update()" style="margin-top:4px;">
         <div class="range-vals"><span>% of price</span><span></span></div>
       </div>
@@ -733,7 +733,7 @@ function buildCreative(price, rate, downP, vacP) {
 function resetDefaults() {
   document.getElementById('priceSlider').value = 9200000;
   document.getElementById('rateInput').value   = '6.00';
-  document.getElementById('downInput').value   = '50';
+  document.getElementById('downInput').value   = '45';
   document.getElementById('vacInput').value    = '3.0';
   syncPrice(9200000);
 }
