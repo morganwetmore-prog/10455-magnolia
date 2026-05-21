@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Strohm Building — 10455 Magnolia Blvd | Investment Analyzer</title>
+<style>
+:root {
+  --navy: #003366;
+  --navy-light: #1a4a80;
+  --orange: #FF6600;
+  --orange-light: #ff8533;
+  --light: #F5F7FA;
+  --mid: #dde3ec;
+  --text: #1a1a2e;
+  --muted: #6b7a8d;
+  --white: #ffffff;
+  --green: #1a7a40;
+  --red: #b82828;
+  --highlight: #fff8f0;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, 'Segoe UI', Arial, sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  background: #eef1f6;
+  min-height: 100vh;
+}
+
+/* ── TOP HEADER ── */
+.site-header {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+  color: var(--white);
+  padding: 24px 32px 20px;
+  position: relative;
+  overflow: hidden;
+}
+.site-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 4px;
+  background: var(--orange);
+}
+.header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: flex-start; }
+.hdr-left h1 { font-size: 26px; font-weight: 800; letter-spacing: 0.3px; line-height: 1.1; }
+.hdr-left .addr { font-size: 13px; opacity: 0.82; margin-top: 5px; letter-spacing: 0.2px; }
+.hdr-left .tags { margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; }
+.tag {
+  background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 20px; padding: 3px 10px; font-size: 11px; font-weight: 600;
+  letter-spacing: 0.3px;
+}
+.hdr-right { text-align: right; }
+.hdr-right .firm { font-size: 13px; font-weight: 800; letter-spacing: 2px; opacity: 0.9; }
+.hdr-right .agent { font-size: 12px; opacity: 0.75; margin-top: 4px; }
+.hdr-right .date { font-size: 11px; opacity: 0.6; margin-top: 2px; }
+
+/* ── CONTROLS BAR ── */
+.controls-wrap { background: var(--white); border-bottom: 3px solid var(--orange); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,0.10); }
+.controls-inner { max-width: 1200px; margin: 0 auto; padding: 16px 24px; }
+.controls-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 12px; }
+.controls-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; gap: 16px; align-items: end; }
+
+.ctrl-group label { display: block; font-size: 11px; font-weight: 700; color: var(--navy); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+.ctrl-group input[type="range"] { width: 100%; accent-color: var(--orange); cursor: pointer; height: 6px; }
+.ctrl-group .range-vals { display: flex; justify-content: space-between; font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+.big-display {
+  font-size: 22px; font-weight: 800; color: var(--navy);
+  background: var(--light); border: 2px solid var(--navy);
+  border-radius: 6px; padding: 6px 12px; text-align: center;
+  margin-top: 4px; min-width: 140px;
+}
+
+.ctrl-input {
+  width: 100%; border: 2px solid var(--mid); border-radius: 6px;
+  padding: 7px 10px; font-size: 14px; font-weight: 700; color: var(--navy);
+  background: var(--light); outline: none; text-align: center;
+  transition: border-color .15s;
+}
+.ctrl-input:focus { border-color: var(--orange); background: var(--white); }
+
+.ctrl-btn {
+  background: var(--orange); color: var(--white); border: none;
+  border-radius: 6px; padding: 9px 14px; font-size: 12px; font-weight: 700;
+  cursor: pointer; width: 100%; letter-spacing: 0.3px;
+  transition: background .15s;
+}
+.ctrl-btn:hover { background: var(--orange-light); }
+
+/* ── MAIN CONTENT ── */
+.main { max-width: 1200px; margin: 0 auto; padding: 24px 24px 40px; }
+
+/* ── COMPARISON HEADER ── */
+.compare-strip {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 16px; margin-bottom: 16px;
+}
+.route-card {
+  border-radius: 8px; overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.route-hdr {
+  padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;
+}
+.route-hdr.llc { background: var(--navy); color: var(--white); }
+.route-hdr.norm { background: #5a2d00; color: var(--white); }
+.route-hdr h2 { font-size: 14px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; }
+.route-hdr .tax-badge {
+  font-size: 11px; padding: 3px 10px; border-radius: 20px;
+  background: rgba(255,255,255,0.2); font-weight: 600;
+}
+
+/* ── METRIC HIGHLIGHTS ── */
+.metric-pills {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  background: var(--light); border-bottom: 1px solid var(--mid);
+}
+.mpill { text-align: center; padding: 10px 8px; border-right: 1px solid var(--mid); }
+.mpill:last-child { border-right: none; }
+.mpill .lbl { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); }
+.mpill .val { font-size: 18px; font-weight: 800; color: var(--navy); margin-top: 2px; line-height: 1; }
+.mpill .val.orange { color: var(--orange); }
+.mpill .val.green { color: var(--green); }
+
+/* ── DATA TABLE ── */
+.data-tbl-wrap { background: var(--white); }
+.data-tbl { width: 100%; border-collapse: collapse; }
+.data-tbl .sec-hdr td {
+  background: #e8edf5; color: var(--navy);
+  font-size: 9px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 0.5px; padding: 5px 14px; border-bottom: 1px solid var(--mid);
+}
+.data-tbl tr:hover:not(.sec-hdr):not(.tot-row):not(.sub-tot) { background: #fafbfc; }
+.data-tbl td { padding: 5px 14px; font-size: 12.5px; border-bottom: 1px solid #f0f2f5; }
+.data-tbl td:last-child { text-align: right; font-weight: 600; }
+.data-tbl .sub-tot td { font-weight: 700; border-top: 2px solid var(--navy); background: #edf1f8; font-size: 13px; }
+.data-tbl .tot-row td { background: var(--navy); color: var(--white); font-weight: 700; font-size: 13px; }
+.data-tbl .hi-row td { background: var(--highlight); font-weight: 600; }
+.data-tbl .indent td:first-child { padding-left: 26px; color: var(--muted); font-size: 12px; }
+.data-tbl td.neg { color: var(--red); }
+.data-tbl td.pos { color: var(--green); }
+.data-tbl td.big { font-size: 15px !important; color: var(--navy); font-weight: 800 !important; }
+
+/* ── BOTTOM GRID ── */
+.bot-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 16px; }
+
+.panel {
+  background: var(--white); border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07); overflow: hidden;
+}
+.panel-hdr {
+  background: var(--navy); color: var(--white);
+  padding: 8px 14px; font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.7px;
+}
+.panel-tbl { width: 100%; border-collapse: collapse; }
+.panel-tbl tr:nth-child(even) { background: var(--light); }
+.panel-tbl td, .panel-tbl th {
+  padding: 5px 12px; font-size: 11.5px; border-bottom: 1px solid #f0f2f5;
+}
+.panel-tbl th {
+  background: #e8edf5; color: var(--navy); font-weight: 700;
+  font-size: 10px; text-align: right; text-transform: uppercase; letter-spacing: 0.3px;
+}
+.panel-tbl th:first-child { text-align: left; }
+.panel-tbl td:not(:first-child) { text-align: right; font-weight: 600; }
+.panel-tbl .tot { font-weight: 700; border-top: 2px solid var(--navy); background: #edf1f8; }
+.panel-tbl .tot-red { font-weight: 700; border-top: 1px solid var(--mid); background: #fde8e8; color: var(--red); }
+.panel-tbl .tax-llc td { color: var(--green); }
+.panel-tbl .tax-norm td { color: var(--red); }
+.panel-note { padding: 6px 12px; font-size: 10px; color: var(--muted); border-top: 1px solid var(--mid); }
+
+/* ── CREATIVE SECTION ── */
+.creative-section {
+  background: var(--white); border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07); margin-top: 16px; overflow: hidden;
+}
+.cr-hdr {
+  background: var(--orange); color: var(--white);
+  padding: 12px 18px; display: flex; justify-content: space-between; align-items: center;
+}
+.cr-hdr h3 { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+.cr-hdr span { font-size: 11px; opacity: 0.85; }
+.cr-body { padding: 14px 18px; }
+.cr-intro { font-size: 12px; color: var(--muted); line-height: 1.6; margin-bottom: 12px; }
+.cr-tbl { width: 100%; border-collapse: collapse; border: 1px solid var(--mid); border-radius: 6px; overflow: hidden; }
+.cr-tbl thead tr { background: #5a3200; color: var(--white); }
+.cr-tbl thead th { padding: 8px 12px; font-size: 11px; font-weight: 700; text-align: right; }
+.cr-tbl thead th:first-child { text-align: left; }
+.cr-tbl tbody tr:nth-child(even) { background: var(--light); }
+.cr-tbl td { padding: 7px 12px; font-size: 12px; border-bottom: 1px solid #f0f2f5; text-align: right; }
+.cr-tbl td:first-child { text-align: left; font-weight: 700; }
+.cr-tbl .cr-best { background: var(--highlight) !important; }
+.cr-tbl .best-val { color: var(--green); font-weight: 800; }
+.cr-boxes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 14px; }
+.cr-box {
+  border: 1px solid var(--mid); border-radius: 6px; padding: 12px 14px;
+  font-size: 11.5px; line-height: 1.6; color: var(--text);
+}
+.cr-box strong { color: var(--orange); display: block; font-size: 12px; margin-bottom: 4px; }
+
+/* ── FOOTER ── */
+.site-footer {
+  background: var(--navy); color: var(--white);
+  padding: 16px 32px; margin-top: 8px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.site-footer .ag { font-size: 13px; }
+.site-footer .disc { font-size: 10px; opacity: 0.65; max-width: 50%; text-align: right; line-height: 1.5; }
+
+/* ── UTIL ── */
+.updated-flash { animation: flash .4s ease; }
+@keyframes flash { 0%{opacity:.4} 100%{opacity:1} }
+.section-spacer { height: 6px; }
+
+@media (max-width: 900px) {
+  .compare-strip { grid-template-columns: 1fr; }
+  .controls-grid { grid-template-columns: 1fr 1fr; }
+  .bot-grid { grid-template-columns: 1fr 1fr; }
+  .cr-boxes { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .controls-grid { grid-template-columns: 1fr; }
+  .bot-grid { grid-template-columns: 1fr; }
+  .header-inner { flex-direction: column; gap: 10px; }
+  .hdr-right { text-align: left; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="hdr-left">
+      <h1>THE STROHM BUILDING</h1>
+      <div class="addr">10455 Magnolia Blvd &nbsp;·&nbsp; North Hollywood, CA 91601</div>
+      <div class="tags">
+        <span class="tag">26 Units</span>
+        <span class="tag">Built 2016</span>
+        <span class="tag">23,644 SF</span>
+        <span class="tag">100% Occupied</span>
+        <span class="tag">RSO Exempt</span>
+        <span class="tag">AB 1482 Exempt thru 2031</span>
+      </div>
+    </div>
+    <div class="hdr-right">
+      <div class="firm">MARCUS &amp; MILLICHAP</div>
+      <div class="agent">Morgan Wetmore &nbsp;|&nbsp; LAAA Team</div>
+      <div class="date">morgan.wetmore@marcusmillichap.com</div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ CONTROLS ═══ -->
+<div class="controls-wrap">
+  <div class="controls-inner">
+    <div class="controls-label">&#9881; Adjust Deal Parameters — All figures update instantly</div>
+    <div class="controls-grid">
+      <!-- Price Slider -->
+      <div class="ctrl-group">
+        <label>Purchase Price</label>
+        <input type="range" id="priceSlider" min="8000000" max="10000000" step="50000" value="9200000"
+               oninput="syncPrice(this.value)" style="margin-top:4px;">
+        <div class="range-vals"><span>$8.0M</span><span>$10.0M</span></div>
+        <div class="big-display" id="priceDisplay">$9,200,000</div>
+      </div>
+      <!-- Interest Rate -->
+      <div class="ctrl-group">
+        <label>Interest Rate</label>
+        <input class="ctrl-input" type="number" id="rateInput" value="6.00" min="3" max="12" step="0.125"
+               oninput="update()" style="margin-top:4px;">
+        <div class="range-vals"><span>% per year</span><span>30-yr amort.</span></div>
+      </div>
+      <!-- Down Payment -->
+      <div class="ctrl-group">
+        <label>Down Payment %</label>
+        <input class="ctrl-input" type="number" id="downInput" value="50" min="20" max="80" step="5"
+               oninput="update()" style="margin-top:4px;">
+        <div class="range-vals"><span>% of price</span><span></span></div>
+      </div>
+      <!-- Vacancy -->
+      <div class="ctrl-group">
+        <label>Vacancy Rate</label>
+        <input class="ctrl-input" type="number" id="vacInput" value="3.0" min="0" max="15" step="0.5"
+               oninput="update()" style="margin-top:4px;">
+        <div class="range-vals"><span>% of gross</span><span></span></div>
+      </div>
+      <!-- Print -->
+      <div class="ctrl-group">
+        <label>&nbsp;</label>
+        <button class="ctrl-btn" onclick="window.print()" style="margin-top:4px;">&#128438; Print / Save PDF</button>
+        <button class="ctrl-btn" onclick="resetDefaults()" style="margin-top:6px;background:#6b7a8d;">&#8635; Reset</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MAIN ═══ -->
+<main class="main">
+
+  <!-- COMPARISON CARDS -->
+  <div class="compare-strip">
+
+    <!-- LLC PURCHASE -->
+    <div class="route-card" id="llc-card">
+      <div class="route-hdr llc">
+        <h2>&#127970; LLC Purchase</h2>
+        <span class="tax-badge">RE Taxes: $36,000/yr — No Reassessment</span>
+      </div>
+      <div class="metric-pills">
+        <div class="mpill"><div class="lbl">Cap Rate</div><div class="val orange" id="llc-cap">—</div></div>
+        <div class="mpill"><div class="lbl">Cash-on-Cash</div><div class="val green" id="llc-coc">—</div></div>
+        <div class="mpill"><div class="lbl">Pre-Tax Cash Flow</div><div class="val" id="llc-cf">—</div></div>
+      </div>
+      <div class="data-tbl-wrap">
+        <table class="data-tbl">
+          <tbody>
+            <tr class="sec-hdr"><td colspan="2">Income</td></tr>
+            <tr><td>Scheduled Gross Income</td><td>$726,131</td></tr>
+            <tr class="indent"><td>Vacancy Reserve</td><td class="neg" id="llc-vac">—</td></tr>
+            <tr class="sub-tot"><td>Gross Operating Income</td><td id="llc-goi">—</td></tr>
+
+            <tr class="sec-hdr"><td colspan="2">Expenses</td></tr>
+            <tr class="indent"><td>Operating Expenses (excl. taxes)</td><td class="neg">($135,411)</td></tr>
+            <tr class="indent"><td>Real Estate Taxes — LLC</td><td class="neg">($36,000)</td></tr>
+            <tr class="indent"><td>Total Expenses</td><td id="llc-exp">$171,411</td></tr>
+            <tr class="sub-tot"><td>Net Operating Income</td><td class="big" id="llc-noi">—</td></tr>
+
+            <tr class="sec-hdr"><td colspan="2">Financing</td></tr>
+            <tr class="indent"><td>Down Payment</td><td id="llc-down">—</td></tr>
+            <tr class="indent"><td>Loan Amount</td><td id="llc-loan">—</td></tr>
+            <tr class="indent"><td>Annual Debt Service</td><td class="neg" id="llc-ds">—</td></tr>
+            <tr class="hi-row sub-tot"><td>Pre-Tax Cash Flow</td><td class="big" id="llc-cf2">—</td></tr>
+            <tr class="indent"><td>Principal Reduction (Year 1)</td><td class="pos" id="llc-prin">—</td></tr>
+            <tr class="tot-row"><td>Total Return Before Taxes</td><td id="llc-tot">—</td></tr>
+
+            <tr class="sec-hdr"><td colspan="2">Key Metrics</td></tr>
+            <tr class="hi-row"><td><strong>Cap Rate</strong></td><td class="big" id="llc-cap2">—</td></tr>
+            <tr><td>Gross Rent Multiplier</td><td id="llc-grm">—</td></tr>
+            <tr><td>Price per Unit</td><td id="llc-ppu">—</td></tr>
+            <tr><td>Price per SF</td><td id="llc-ppsf">—</td></tr>
+            <tr><td>Debt Svc. Coverage Ratio</td><td id="llc-dscr">—</td></tr>
+            <tr class="hi-row"><td><strong>Cash-on-Cash Return</strong></td><td class="big" id="llc-coc2">—</td></tr>
+            <tr><td>Total Return %</td><td id="llc-tr">—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- NORMAL PURCHASE -->
+    <div class="route-card" id="norm-card">
+      <div class="route-hdr norm">
+        <h2>&#127968; Normal (Standard) Purchase</h2>
+        <span class="tax-badge" id="norm-tax-badge">RE Taxes: ~1.15% of purchase price</span>
+      </div>
+      <div class="metric-pills">
+        <div class="mpill"><div class="lbl">Cap Rate</div><div class="val orange" id="norm-cap">—</div></div>
+        <div class="mpill"><div class="lbl">Cash-on-Cash</div><div class="val green" id="norm-coc">—</div></div>
+        <div class="mpill"><div class="lbl">Pre-Tax Cash Flow</div><div class="val" id="norm-cf">—</div></div>
+      </div>
+      <div class="data-tbl-wrap">
+        <table class="data-tbl">
+          <tbody>
+            <tr class="sec-hdr"><td colspan="2">Income</td></tr>
+            <tr><td>Scheduled Gross Income</td><td>$726,131</td></tr>
+            <tr class="indent"><td>Vacancy Reserve</td><td class="neg" id="norm-vac">—</td></tr>
+            <tr class="sub-tot"><td>Gross Operating Income</td><td id="norm-goi">—</td></tr>
+
+            <tr class="sec-hdr"><td colspan="2">Expenses</td></tr>
+            <tr class="indent"><td>Operating Expenses (excl. taxes)</td><td class="neg">($135,411)</td></tr>
+            <tr class="indent"><td>Real Estate Taxes (reassessed)</td><td class="neg" id="norm-tax">—</td></tr>
+            <tr class="indent"><td>Total Expenses</td><td id="norm-exp">—</td></tr>
+            <tr class="sub-tot"><td>Net Operating Income</td><td class="big" id="norm-noi">—</td></tr>
+
+            <tr class="sec-hdr"><td colspan="2">Financing</td></tr>
+            <tr class="indent"><td>Down Payment</td><td id="norm-down">—</td></tr>
+            <tr class="indent"><td>Loan Amount</td><td id="norm-loan">—</td></tr>
+            <tr class="indent"><td>Annual Debt Service</td><td class="neg" id="norm-ds">—</td></tr>
+            <tr class="hi-row sub-tot"><td>Pre-Tax Cash Flow</td><td class="big" id="norm-cf2">—</td></tr>
+            <tr class="indent"><td>Principal Reduction (Year 1)</td><td class="pos" id="norm-prin">—</td></tr>
+            <tr class="tot-row"><td>Total Return Before Taxes</td><td id="norm-tot">—</td></tr>
+
+            <tr class="sec-hdr"><td colspan="2">Key Metrics</td></tr>
+            <tr class="hi-row"><td><strong>Cap Rate</strong></td><td class="big" id="norm-cap2">—</td></tr>
+            <tr><td>Gross Rent Multiplier</td><td id="norm-grm">—</td></tr>
+            <tr><td>Price per Unit</td><td id="norm-ppu">—</td></tr>
+            <tr><td>Price per SF</td><td id="norm-ppsf">—</td></tr>
+            <tr><td>Debt Svc. Coverage Ratio</td><td id="norm-dscr">—</td></tr>
+            <tr class="hi-row"><td><strong>Cash-on-Cash Return</strong></td><td class="big" id="norm-coc2">—</td></tr>
+            <tr><td>Total Return %</td><td id="norm-tr">—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM PANELS -->
+  <div class="bot-grid">
+
+    <!-- EXPENSE DETAIL -->
+    <div class="panel">
+      <div class="panel-hdr">Annualized Expense Detail</div>
+      <table class="panel-tbl">
+        <thead><tr><th>Item</th><th>Annual</th><th>/Unit</th></tr></thead>
+        <tbody>
+          <tr class="tax-llc"><td>RE Taxes — LLC Route</td><td>$36,000</td><td>$1,385</td></tr>
+          <tr class="tax-norm"><td id="exp-norm-lbl">RE Taxes — Normal</td><td id="exp-norm-val">—</td><td id="exp-norm-pu">—</td></tr>
+          <tr><td>Insurance</td><td>$15,778</td><td>$607</td></tr>
+          <tr><td>All Utilities</td><td>$33,276</td><td>$1,280</td></tr>
+          <tr><td>Trash Removal</td><td>$16,023</td><td>$616</td></tr>
+          <tr><td>Repairs &amp; Maintenance</td><td>$13,000</td><td>$500</td></tr>
+          <tr><td>Contract Services</td><td>$10,709</td><td>$412</td></tr>
+          <tr><td>Keyholder</td><td>$10,607</td><td>$408</td></tr>
+          <tr><td>Gen &amp; Admin</td><td>$2,600</td><td>$100</td></tr>
+          <tr><td>Operating Reserves</td><td>$3,900</td><td>$150</td></tr>
+          <tr><td>Management Fee</td><td>$29,518</td><td>$1,135</td></tr>
+          <tr class="tot"><td>Total — LLC Route</td><td>$171,411</td><td>$6,593</td></tr>
+          <tr class="tot-red"><td>Total — Normal Route</td><td id="exp-tot-norm">—</td><td id="exp-tot-norm-pu">—</td></tr>
+        </tbody>
+      </table>
+      <div class="panel-note" id="exp-note">Annual tax delta: calculating…</div>
+    </div>
+
+    <!-- RENT ROLL -->
+    <div class="panel">
+      <div class="panel-hdr">Rent Roll Summary — October 2025</div>
+      <table class="panel-tbl">
+        <thead><tr><th>Type</th><th>Ct</th><th>Avg SF</th><th>Avg Rent</th><th>Annual</th></tr></thead>
+        <tbody>
+          <tr><td>Studio / 1 Bath</td><td>15</td><td>532</td><td>$1,899</td><td>$341,868</td></tr>
+          <tr><td>1 Bed + Den / 1 Bath</td><td>2</td><td>650</td><td>$2,382</td><td>$57,168</td></tr>
+          <tr><td>2 Bed / 2 Bath</td><td>9</td><td>1,000</td><td>$2,808</td><td>$303,288</td></tr>
+          <tr class="tot"><td>Total / Avg</td><td>26</td><td>—</td><td>$2,253</td><td>$702,324</td></tr>
+        </tbody>
+      </table>
+      <div class="panel-note">100% occupied (Oct 2025). Not subject to LA RSO. AB 1482 exempt through 2031.</div>
+
+      <div class="panel-hdr" style="margin-top:1px;">Property Highlights</div>
+      <table class="panel-tbl">
+        <tbody>
+          <tr><td>&#10003;&ensp;2016 construction — minimal deferred maintenance</td></tr>
+          <tr><td>&#10003;&ensp;In-unit washer/dryer in every unit</td></tr>
+          <tr><td>&#10003;&ensp;Rooftop lounge, outdoor kitchen &amp; fire pit</td></tr>
+          <tr><td>&#10003;&ensp;Elevator + controlled entry / interior mailroom</td></tr>
+          <tr><td>&#10003;&ensp;36 subterranean parking spaces</td></tr>
+          <tr><td>&#10003;&ensp;ADU upside: est. +$31,200/yr (2BR, ~850 SF)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- QUICK COMPARE -->
+    <div class="panel">
+      <div class="panel-hdr">LLC vs. Normal — Side-by-Side</div>
+      <table class="panel-tbl">
+        <thead><tr><th>Metric</th><th>LLC</th><th>Normal</th></tr></thead>
+        <tbody>
+          <tr><td>RE Taxes/yr</td><td style="color:var(--green);font-weight:700;">$36,000</td><td style="color:var(--red);font-weight:700;" id="cmp-tax">—</td></tr>
+          <tr><td>NOI</td><td id="cmp-llc-noi">—</td><td id="cmp-norm-noi">—</td></tr>
+          <tr><td>Cap Rate</td><td id="cmp-llc-cap">—</td><td id="cmp-norm-cap">—</td></tr>
+          <tr><td>Cash-on-Cash</td><td id="cmp-llc-coc">—</td><td id="cmp-norm-coc">—</td></tr>
+          <tr><td>Pre-Tax Cash Flow</td><td id="cmp-llc-cf">—</td><td id="cmp-norm-cf">—</td></tr>
+          <tr><td>DSCR</td><td id="cmp-llc-dscr">—</td><td id="cmp-norm-dscr">—</td></tr>
+          <tr><td>Total Return %</td><td id="cmp-llc-tr">—</td><td id="cmp-norm-tr">—</td></tr>
+          <tr class="tot"><td>Annual Tax Advantage</td><td colspan="2" id="cmp-advantage" style="text-align:center;color:var(--green);">—</td></tr>
+        </tbody>
+      </table>
+      <div class="panel-note">All metrics based on current price &amp; rate settings above.</div>
+    </div>
+  </div>
+
+  <!-- CREATIVE STRUCTURES -->
+  <div class="creative-section">
+    <div class="cr-hdr">
+      <h3>&#128161; Creative Offer Structures — Maximize Buyer Returns</h3>
+      <span>All scenarios at current price setting — same ~total buyer outlay</span>
+    </div>
+    <div class="cr-body">
+      <table class="cr-tbl" id="creative-tbl">
+        <thead>
+          <tr>
+            <th style="text-align:left;">Structure</th>
+            <th>Recorded Price</th>
+            <th>Buyer ULA Cost</th>
+            <th>Buyer Comm. Cost</th>
+            <th>Buyer All-In</th>
+            <th>LLC Cap Rate</th>
+            <th>Normal Cap Rate</th>
+            <th>Normal RE Tax</th>
+            <th>Annual Tax Savings</th>
+          </tr>
+        </thead>
+        <tbody id="creative-body">
+          <!-- populated by JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="site-footer">
+  <div class="ag">
+    <strong>Morgan Wetmore</strong> &nbsp;·&nbsp; LAAA Team &nbsp;·&nbsp; Marcus &amp; Millichap<br>
+    <span style="font-size:11px;opacity:.75;">morgan.wetmore@marcusmillichap.com</span>
+  </div>
+  <div class="disc">
+    For informational purposes only. Does not constitute a guaranty, warranty, or representation.
+    All projections are estimates based on current rent roll (Oct 2025) and user-entered assumptions.
+    Buyer to conduct independent due diligence. Taxes subject to assessor determination.
+    Measure ULA subject to legal counsel. © 2026 Marcus &amp; Millichap.
+  </div>
+</footer>
+
+<script>
+// ── FIXED ASSUMPTIONS ──────────────────────────────────────────────
+const SGI         = 726131;
+const OTHER_EXP   = 135411;  // all expenses except taxes
+const LLC_TAX     = 36000;
+const NORM_TAX_RT = 0.0115;  // 1.15% of price
+const UNITS       = 26;
+const BLDG_SF     = 23644;
+const AMORT_YRS   = 30;
+const ULA_RATE    = 0.04;    // Measure ULA 4% ($5M–$10M City of LA)
+const COMM_RATE   = 0.02;    // 2% total (LAAA dual rep: 1% each side)
+
+// ── HELPERS ────────────────────────────────────────────────────────
+const fmt$ = (n, dec=0) => '$' + Math.abs(n).toLocaleString('en-US', {minimumFractionDigits:dec, maximumFractionDigits:dec});
+const fmtPct = (n, dec=2) => (n * 100).toFixed(dec) + '%';
+const fmtX = (n, dec=2) => n.toFixed(dec) + 'x';
+const neg = (s) => s.startsWith('-') ? s : '(' + s + ')';
+
+function annualDSFactor(rate, years) {
+  const r = rate / 12;
+  const n = years * 12;
+  if (r === 0) return 1 / (n);
+  return (r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1)) * 12;
+}
+
+function calc(price, annualRate, downPct, vacPct, taxType) {
+  const taxes      = taxType === 'llc' ? LLC_TAX : price * NORM_TAX_RT;
+  const totalExp   = OTHER_EXP + taxes;
+  const vacAmt     = SGI * (vacPct / 100);
+  const GOI        = SGI - vacAmt;
+  const NOI        = GOI - totalExp;
+  const rate       = annualRate / 100;
+  const down       = price * (downPct / 100);
+  const loan       = price - down;
+  const dsFactor   = annualDSFactor(rate, AMORT_YRS);
+  const annualDS   = loan * dsFactor;
+  const yr1Int     = loan * rate;  // approx year-1 interest
+  const principal  = Math.max(0, annualDS - yr1Int);
+  const cashFlow   = NOI - annualDS;
+  const totalRet   = cashFlow + principal;
+  return {
+    taxes, totalExp, vacAmt, GOI, NOI,
+    down, loan, annualDS, principal, cashFlow, totalRet,
+    capRate:   NOI / price,
+    grm:       price / SGI,
+    ppu:       price / UNITS,
+    ppsf:      price / BLDG_SF,
+    dscr:      annualDS > 0 ? NOI / annualDS : 0,
+    coc:       down > 0 ? cashFlow / down : 0,
+    trPct:     down > 0 ? totalRet / down : 0,
+  };
+}
+
+function set(id, val) {
+  const el = document.getElementById(id);
+  if (el) { el.textContent = val; }
+}
+
+function syncPrice(val) {
+  document.getElementById('priceDisplay').textContent = fmt$(parseFloat(val));
+  update();
+}
+
+function update() {
+  const price  = parseFloat(document.getElementById('priceSlider').value);
+  const rate   = parseFloat(document.getElementById('rateInput').value)   || 6;
+  const downP  = parseFloat(document.getElementById('downInput').value)    || 50;
+  const vacP   = parseFloat(document.getElementById('vacInput').value)     || 3;
+
+  // keep slider in sync if user typed a different price (not applicable here but consistent)
+  document.getElementById('priceDisplay').textContent = fmt$(price);
+
+  const L = calc(price, rate, downP, vacP, 'llc');
+  const N = calc(price, rate, downP, vacP, 'normal');
+
+  // ── LLC ──
+  set('llc-cap',  fmtPct(L.capRate));
+  set('llc-coc',  fmtPct(L.coc));
+  set('llc-cf',   fmt$(L.cashFlow));
+  set('llc-vac',  neg(fmt$(L.vacAmt)));
+  set('llc-goi',  fmt$(L.GOI));
+  set('llc-exp',  fmt$(L.totalExp));
+  set('llc-noi',  fmt$(L.NOI));
+  set('llc-down', fmt$(L.down));
+  set('llc-loan', fmt$(L.loan));
+  set('llc-ds',   neg(fmt$(L.annualDS)));
+  set('llc-cf2',  fmt$(L.cashFlow));
+  set('llc-prin', fmt$(L.principal));
+  set('llc-tot',  fmt$(L.totalRet));
+  set('llc-cap2', fmtPct(L.capRate));
+  set('llc-grm',  fmtX(L.grm));
+  set('llc-ppu',  fmt$(L.ppu));
+  set('llc-ppsf', '$' + (L.ppsf).toFixed(2));
+  set('llc-dscr', fmtX(L.dscr));
+  set('llc-coc2', fmtPct(L.coc));
+  set('llc-tr',   fmtPct(L.trPct));
+
+  // ── Normal ──
+  set('norm-tax-badge', `RE Taxes: ${fmt$(N.taxes)}/yr (reassessed)`);
+  set('norm-cap',  fmtPct(N.capRate));
+  set('norm-coc',  fmtPct(N.coc));
+  set('norm-cf',   fmt$(N.cashFlow));
+  set('norm-vac',  neg(fmt$(N.vacAmt)));
+  set('norm-goi',  fmt$(N.GOI));
+  set('norm-tax',  neg(fmt$(N.taxes)));
+  set('norm-exp',  fmt$(N.totalExp));
+  set('norm-noi',  fmt$(N.NOI));
+  set('norm-down', fmt$(N.down));
+  set('norm-loan', fmt$(N.loan));
+  set('norm-ds',   neg(fmt$(N.annualDS)));
+  set('norm-cf2',  fmt$(N.cashFlow));
+  set('norm-prin', fmt$(N.principal));
+  set('norm-tot',  fmt$(N.totalRet));
+  set('norm-cap2', fmtPct(N.capRate));
+  set('norm-grm',  fmtX(N.grm));
+  set('norm-ppu',  fmt$(N.ppu));
+  set('norm-ppsf', '$' + (N.ppsf).toFixed(2));
+  set('norm-dscr', fmtX(N.dscr));
+  set('norm-coc2', fmtPct(N.coc));
+  set('norm-tr',   fmtPct(N.trPct));
+
+  // ── Expense panel ──
+  set('exp-norm-lbl', `RE Taxes — Normal @ ${fmt$(price)}`);
+  set('exp-norm-val', fmt$(N.taxes));
+  set('exp-norm-pu',  fmt$(N.taxes / UNITS));
+  set('exp-tot-norm', fmt$(N.totalExp));
+  set('exp-tot-norm-pu', fmt$(N.totalExp / UNITS));
+  const delta = N.taxes - LLC_TAX;
+  set('exp-note', `Annual tax delta: ${fmt$(delta)} more under Normal vs. LLC at ${fmt$(price)}.`);
+
+  // ── Comparison panel ──
+  set('cmp-tax',       fmt$(N.taxes));
+  set('cmp-llc-noi',   fmt$(L.NOI));
+  set('cmp-norm-noi',  fmt$(N.NOI));
+  set('cmp-llc-cap',   fmtPct(L.capRate));
+  set('cmp-norm-cap',  fmtPct(N.capRate));
+  set('cmp-llc-coc',   fmtPct(L.coc));
+  set('cmp-norm-coc',  fmtPct(N.coc));
+  set('cmp-llc-cf',    fmt$(L.cashFlow));
+  set('cmp-norm-cf',   fmt$(N.cashFlow));
+  set('cmp-llc-dscr',  fmtX(L.dscr));
+  set('cmp-norm-dscr', fmtX(N.dscr));
+  set('cmp-llc-tr',    fmtPct(L.trPct));
+  set('cmp-norm-tr',   fmtPct(N.trPct));
+  set('cmp-advantage', `${fmt$(delta)}/yr · ${fmt$(delta * 10)} over 10 yrs`);
+
+  // ── Creative Structures ──
+  buildCreative(price, rate, downP, vacP);
+
+  // flash
+  ['llc-card','norm-card'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.classList.remove('updated-flash'); void el.offsetWidth; el.classList.add('updated-flash'); }
+  });
+}
+
+function buildCreative(price, rate, downP, vacP) {
+  const ULA = price * ULA_RATE;
+
+  // Scenario A: Standard
+  const priceA = price;
+
+  // Scenario B: Buyer assumes ULA → recorded price = price / (1 + ULA_RATE)
+  const priceB = price / (1 + ULA_RATE);
+  const buyerULA_B = priceB * ULA_RATE;
+
+  // Scenario C: Buyer pays commission (net deal) → recorded price = price / (1 + COMM_RATE)
+  const priceC = price / (1 + COMM_RATE);
+  const buyerComm_C = priceC * COMM_RATE;
+
+  // Scenario D: Buyer pays ULA + commission → price / (1 + ULA + COMM)
+  const priceD = price / (1 + ULA_RATE + COMM_RATE);
+  const buyerULA_D  = priceD * ULA_RATE;
+  const buyerComm_D = priceD * COMM_RATE;
+
+  const scens = [
+    { label: 'Standard Closing',               rp: priceA, ula: 0,          comm: 0,          best: false },
+    { label: 'Buyer Assumes ULA Tax',           rp: priceB, ula: buyerULA_B, comm: 0,          best: true  },
+    { label: 'LAAA Dual Rep — Buyer Pays Commission (2%)', rp: priceC, ula: 0,          comm: buyerComm_C, best: true  },
+    { label: 'LAAA Dual Rep + Buyer Assumes ULA',         rp: priceD, ula: buyerULA_D, comm: buyerComm_D, best: true  },
+  ];
+
+  const tbody = document.getElementById('creative-body');
+  tbody.innerHTML = '';
+
+  scens.forEach(s => {
+    const allIn = s.rp + s.ula + s.comm;
+    const normTax = s.rp * NORM_TAX_RT;
+    const normNOI = (SGI * (1 - vacP/100)) - (OTHER_EXP + normTax);
+    const llcNOI  = (SGI * (1 - vacP/100)) - (OTHER_EXP + LLC_TAX);
+    const llcCap  = llcNOI / s.rp;
+    const normCap = normNOI / s.rp;
+    const baseTax = price * NORM_TAX_RT;
+    const taxSave = baseTax - normTax;
+
+    const tr = document.createElement('tr');
+    if (s.best) tr.className = 'cr-best';
+    tr.innerHTML = `
+      <td>${s.label}</td>
+      <td>${fmt$(s.rp)}</td>
+      <td>${s.ula > 0 ? fmt$(s.ula) : '—'}</td>
+      <td>${s.comm > 0 ? fmt$(s.comm) : '—'}</td>
+      <td>${fmt$(allIn)}</td>
+      <td class="${s.best ? 'best-val' : ''}">${fmtPct(llcCap)}</td>
+      <td class="${s.best ? 'best-val' : ''}">${fmtPct(normCap)}</td>
+      <td>${fmt$(normTax)}</td>
+      <td class="${taxSave > 0 ? 'best-val' : ''}">${taxSave > 0 ? fmt$(taxSave) + '/yr' : '—'}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+}
+
+function resetDefaults() {
+  document.getElementById('priceSlider').value = 9200000;
+  document.getElementById('rateInput').value   = '6.00';
+  document.getElementById('downInput').value   = '50';
+  document.getElementById('vacInput').value    = '3.0';
+  syncPrice(9200000);
+}
+
+// Initial render
+update();
+</script>
+</body>
+</html>
